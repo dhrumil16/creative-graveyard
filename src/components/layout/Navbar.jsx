@@ -1,36 +1,58 @@
-import { Link } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext"; // ✅ FIXED
+import { logoutUser } from "../../services/auth.service";
 
-function Navbar() {
+export default function Navbar() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  async function handleLogout() {
+    await logoutUser();
+    navigate("/login");
+  }
+
+  const linkClass = ({ isActive }) =>
+    `px-4 py-2 rounded-md transition ${
+      isActive ? "bg-emerald-500 text-black" : "text-white hover:bg-white/10"
+    }`;
+
   return (
-    <nav className="fixed top-0 left-0 w-full bg-slate-900 border-b border-slate-800 z-50">
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-xl bg-teal-500 text-slate-950 flex items-center justify-center font-bold">
-            CG
-          </div>
-          <span className="text-lg font-semibold text-slate-100">
-            Creative Graveyard
-          </span>
-        </Link>
+    <nav className="w-full px-6 py-4 bg-[#020617] border-b border-white/10 flex justify-between items-center">
+      <div className="text-xl font-bold text-white">Creative Graveyard</div>
 
-        {/* Nav actions */}
-        <div className="flex items-center gap-6 text-sm font-medium">
-          <Link className="text-slate-400 hover:text-slate-100 transition">
-            Explore
-          </Link>
+      <div className="flex items-center gap-3">
+        <NavLink to="/" className={linkClass}>
+          Explore
+        </NavLink>
+        <NavLink to="/trending" className={linkClass}>
+          Trending
+        </NavLink>
 
-          <Link className="text-slate-400 hover:text-slate-100 transition">
-            Trending
-          </Link>
+        {!user && (
+          <>
+            <NavLink to="/login" className={linkClass}>
+              Login
+            </NavLink>
+            <NavLink to="/signup" className={linkClass}>
+              Signup
+            </NavLink>
+          </>
+        )}
 
-          <Link className="px-4 py-2 rounded-lg bg-teal-500 text-slate-950 hover:bg-teal-400 transition">
-            Share Failure
-          </Link>
-        </div>
+        {user && (
+          <>
+            <NavLink to="/profile" className={linkClass}>
+              Profile
+            </NavLink>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 rounded-md bg-red-500 text-black font-medium"
+            >
+              Logout
+            </button>
+          </>
+        )}
       </div>
     </nav>
   );
 }
-
-export default Navbar;

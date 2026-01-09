@@ -1,9 +1,16 @@
-import React from 'react'
+import { useAuth } from "../../context/AuthContext";
 
-const Profile = () => {
+export default function Profile() {
+  const { user, logout } = useAuth();
+
   return (
-    <div>Profile</div>
-  )
-}
+    <div>
+      <h1>My Profile</h1>
 
-export default Profile
+      <p>Email: {user?.email}</p>
+      <p>Email Verified: {user?.emailVerified ? "Yes" : "No"}</p>
+
+      <button onClick={logout}>Logout</button>
+    </div>
+  );
+}
