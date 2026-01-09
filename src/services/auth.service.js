@@ -32,6 +32,7 @@ export const signupWithEmail = async ({ name, email, password }) => {
     provider: "email",
     createdAt: serverTimestamp(),
   });
+  await signOut(auth);
 
   return res.user;
 };
